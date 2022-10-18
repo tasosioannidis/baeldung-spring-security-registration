@@ -24,6 +24,8 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 @Configuration
 @ComponentScan(basePackages = { "com.baeldung.web" })
@@ -52,6 +54,7 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addViewController("/home.html");
         registry.addViewController("/invalidSession.html");
         registry.addViewController("/admin.html");
+        registry.addViewController("/management.html");
         registry.addViewController("/successRegister.html");
         registry.addViewController("/forgetPassword.html");
         registry.addViewController("/updatePassword.html");
@@ -100,6 +103,19 @@ public class MvcConfig implements WebMvcConfigurer {
     @ConditionalOnMissingBean(RequestContextListener.class)
     public RequestContextListener requestContextListener() {
         return new RequestContextListener();
+    }
+
+    @Bean
+    public ClassLoaderTemplateResolver customTemplateResolver() {
+        ClassLoaderTemplateResolver emailTemplateResolver = new ClassLoaderTemplateResolver();
+        emailTemplateResolver.setPrefix("private/");
+        emailTemplateResolver.setSuffix(".html");
+        emailTemplateResolver.setTemplateMode(TemplateMode.HTML);
+        emailTemplateResolver.setCharacterEncoding("UTF-8");
+        emailTemplateResolver.setOrder(0);
+        emailTemplateResolver.setCheckExistence(true);
+
+        return emailTemplateResolver;
     }
 
     @Override
